@@ -1,4 +1,9 @@
 
+import InputHandler from "./Input.js";
+import CollectableManager from "./CollectableManager.js";
+import EnemySpawner from "./EnemySpawner.js";
+import Player from "./Player.js";
+
 const config = {
     type: Phaser.AUTO,
     width: 800,
@@ -6,7 +11,7 @@ const config = {
     physics: {
         default: 'arcade',
         arcade: {
-            gravity: { y: 300 },
+            gravity: { x: 0, y: 300 },
             debug: false
         }
     },
@@ -17,23 +22,36 @@ const config = {
     }
 };
 
+// ---------------VARIABLES---------------------
 const game = new Phaser.Game(config);
+let inputHandler, collectableManager;
+/**
+ * @type {Phaser.Physics.Arcade.StaticGroup}
+ */
+let platforms
+/**
+ * @type {Phaser.Physics.Arcade.Sprite}
+ */
+let player, bombs, enemies, stars;
+let enemySpawner;
 
 function preload() {
     this.load.image('sky', './Resources/Sprites/sky.png');
     this.load.image('ground', './Resources/Sprites/platform.png');
     this.load.image('star', './Resources/Sprites/star.png');
     this.load.image('bomb', './Resources/Sprites/bomb.png');
+    this.load.image('gem', './Resources/Sprites/bomb.png');
+    this.load.image('coin', './Resources/Sprites/bomb.png');
+
     this.load.spritesheet('dude',
         './Resources/Sprites/dude.png',
         { frameWidth: 32, frameHeight: 48 }
     );
+    this.load.json('collectables', './Resources/Data/collectables.json');
 }
-var score = 0;
-var scoreText;
+
 function create() {
     this.add.image(400, 300, 'sky');
-    scoreText = this.add.text(16, 16, "score: 0", { fontSize: '32px', fill: '#000' });
     const particles = this.add.particles(0, 0, 'star', {
         speed: 100,
         scale: { start: 1, end: 0 },
@@ -46,32 +64,8 @@ function create() {
     platforms.create(50, 250, 'ground');
     platforms.create(750, 220, 'ground');
 
-
-    player = this.physics.add.sprite(100, 400, 'dude');
-    player.setBounce(0.2);
-    player.setCollideWorldBounds(true);
-    this.physics.add.collider(player, platforms);
-
-    this.anims.create({
-        key: 'left',
-        frames: this.anims.generateFrameNumbers('dude', { start: 0, end: 3 }),
-        frameRate: 10,
-        repeat: -1
-    });
-
-    this.anims.create({
-        key: 'turn',
-        frames: [{ key: 'dude', frame: 4 }],
-        frameRate: 20
-    });
-
-    this.anims.create({
-        key: 'right',
-        frames: this.anims.generateFrameNumbers('dude', { start: 5, end: 8 }),
-        frameRate: 10,
-        repeat: -1
-    });
-
+    player = new Player(this, 300,200, "dude")    
+ 
     const logo = this.physics.add.sprite(400, 100, 'bomb');
     logo.setVelocity(100, 200);
     logo.setBounce(1, 1);
@@ -85,7 +79,7 @@ function create() {
         setXY: { x: 12, y: 0, stepX: 70 }
     });
 
-    stars.children.iterate(function(child) {
+    stars.children.iterate(function (child) {
         child.setBounceY(Phaser.Math.FloatBetween(0.4, 0.8));
     });
 
@@ -96,25 +90,32 @@ function create() {
     this.physics.add.collider(bombs, platforms);
     this.physics.add.collider(player, bombs, hitBomb, null, this);
 
-    cursors = this.input.keyboard.createCursorKeys();
+    collectableManager = new CollectableManager(this, player, platforms);
+    let collectableJson = collectableManager.collectablesJson;
+    collectableManager.createCollectable(300,300, collectableJson.star.type, collectableJson.star.value);
+    collectableManager.createCollectable(400,400, collectableJson.star.type, collectableJson.star.value);
+
+    inputHandler = new InputHandler(this, player);
+    enemySpawner = new EnemySpawner(this);
+        // enemies.setTint(0xff0000);
 }
 
 function hitBomb(player, bomb) {
     this.physics.pause();
     player.setTint(0xff0000);
     player.anims.play('turn');
-    gameOver = true;
+    //gameOver = true;
 }
 
 function collectStar(player, star) {
     star.disableBody(true, true);
 
-    score += 10;
-    scoreText.setText('Score: ' + score);
+    player.inventory.addItem("star", 10);
 
     if (stars.countActive(true) === 0) {
-        stars.children.iterate(function(child) {
+        stars.children.iterate(function (child) {
             child.enableBody(true, child.x, 0, true, true);
+            return true;
         });
 
         var x = (player.x < 400) ? Phaser.Math.Between(400, 800) : Phaser.Math.Between(0, 400);
@@ -123,30 +124,12 @@ function collectStar(player, star) {
         bomb.setBounce(1);
         bomb.setCollideWorldBounds(true);
         bomb.setVelocity(Phaser.Math.Between(-200, 200), 20);
-
     }
 }
 
-
-function update() {
-
-    if (cursors.left.isDown) {
-        player.setVelocityX(-160);
-
-        player.anims.play('left', true);
-    }
-    else if (cursors.right.isDown) {
-        player.setVelocityX(160);
-
-        player.anims.play('right', true);
-    }
-    else {
-        player.setVelocityX(0);
-
-        player.anims.play('turn');
-    }
-
-    if (cursors.up.isDown && player.body.touching.down) {
-        player.setVelocityY(-330);
-    }
+function update(time, delta) {
+    inputHandler.update();
+    enemySpawner.update(delta);
 }
+
+

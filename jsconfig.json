@@ -1,0 +1,13 @@
+{
+    "compilerOptions": {
+      "target": "ES6",
+      "checkJs": true,
+      "moduleResolution": "node",
+      "baseUrl": "./",
+      "paths": {
+        "phaser": ["node_modules/phaser/types/phaser.d.ts"]
+      }
+    },
+    "include": ["./public/**/*"]
+  }
+  

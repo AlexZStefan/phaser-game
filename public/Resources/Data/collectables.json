@@ -1,16 +1,9 @@
 {
-  "collectables": [
+  "collectables": 
     {
-      "type": "star",
-      "value": 10
-    },
-    {
-      "type": "coin",
-      "value": 5
-    },
-    {
-      "type": "gem",
-      "value": 20
+      "star": { "type": "star", "value": 10 },
+      "coin": { "type": "coin", "value": 5 },
+      "gem": { "type": "gem", "value": 20 }
     }
-  ]
+  
 }
