@@ -9,31 +9,32 @@ export default class Inventory {
         this.x = 10;
         this.y = 10;
         this.spacing = 130;
-
         let collectablesJson = this.scene.cache.json.get('collectables').collectables;
 
-        collectablesJson.forEach(element => {
+        Object.values(collectablesJson).forEach(element => {
             this.addItem(element.type, 0)
         });
     }
 
-    // Add an item to the inventory (e.g., "star", "coin")
-    addItem(itemType, value) {
+    CreateTypeIfDoesNotExist(itemType) {
         if (!this.items[itemType]) {
             this.items[itemType] = 0; // If the item doesn't exist, initialize its count
         }
-        this.items[itemType]++; // Increase the item count
-
         // If the icon is not created, create and add it to the scene
         if (!this.itemIcons[itemType]) {
-
             const icon = this.scene.add.image(this.x + this.spacing * Object.keys(this.itemIcons).length, this.y, itemType);
-            icon.setScale(1); // Scale the icons down if needed
             this.itemIcons[itemType] = icon;
             icon.setOrigin(0.4, 0.1);
         }
+    }
+    
+    // Add an item to the inventory (e.g., "star", "coin")
+    addItem(itemType, value) {
+        this.CreateTypeIfDoesNotExist(itemType);
+        if (value != null)
+            this.items[itemType] += value; // Increase the item count
         // Update the count text next to the icon
-        this.updateItemText(itemType, value);
+        this.updateItemText(itemType);
     }
 
     // Update the text next to the icon for a particular item
@@ -52,7 +53,6 @@ export default class Inventory {
         }
         if (value != null) this.items[itemType] = value;
         this.scene[textKey].setText(`${itemType}: ${this.items[itemType]}`);
-
     }
 
     update() {
