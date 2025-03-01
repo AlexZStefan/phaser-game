@@ -5,6 +5,9 @@ export default class Enemy extends Humanoid {
         super(scene, x, y, texture);
         this.setCollideWorldBounds(false);
         this.scene = scene;
+        this.setTint(0xff0000);
+
+        scene.physics.add.overlap(scene.player, this, ()=> scene.player.triggerDeath(), null, this);
     }
 
     update() {
@@ -15,4 +18,5 @@ export default class Enemy extends Humanoid {
         return false;
     }
 
+    
 }
