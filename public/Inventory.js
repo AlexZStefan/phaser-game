@@ -14,6 +14,8 @@ export default class Inventory {
         Object.values(collectablesJson).forEach(element => {
             this.addItem(element.type, 0)
         });
+
+        scene.events.on("shutdown", this.clearInventory, this);
     }
 
     CreateTypeIfDoesNotExist(itemType) {
@@ -36,11 +38,34 @@ export default class Inventory {
         // Update the count text next to the icon
         this.updateItemText(itemType);
     }
-
+    
+    clearInventory() {
+        // Destroy all item icons
+        Object.values(this.itemIcons).forEach(icon => {
+            if (icon) icon.destroy();
+        });
+    
+        // Destroy all item count texts
+        Object.keys(this.items).forEach(itemType => {
+            const textKey = `${itemType}Text`;
+            if (this.scene[textKey]) {
+                this.scene[textKey].destroy();
+                delete this.scene[textKey]; // Remove reference
+            }
+        });
+    
+        // Reset inventory data
+        this.items = {};
+        this.itemIcons = {};
+    }
+    
     // Update the text next to the icon for a particular item
     updateItemText(itemType, value = null) {
         const textKey = `${itemType}Text`;
-
+        if (!this.itemIcons[itemType]) {
+            console.error(`Error: No icon found for item type "${itemType}"`);
+            return;
+        }
         // If the text already exists, update it
         if (!this.scene[textKey]) {
             // Otherwise, create the text next to the icon
@@ -53,8 +78,5 @@ export default class Inventory {
         }
         if (value != null) this.items[itemType] = value;
         this.scene[textKey].setText(`${itemType}: ${this.items[itemType]}`);
-    }
-
-    update() {
     }
 }
