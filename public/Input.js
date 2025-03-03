@@ -6,7 +6,6 @@ export default class InputHandler {
         this.scene = scene;
         // Set up the cursors for input
         this.cursors = this.scene.input.keyboard.createCursorKeys();
-
     }
 
     characterMovement() {
@@ -30,6 +29,10 @@ export default class InputHandler {
             }
             if (this.cursors.up.isDown && player.body.touching.down) {
                 player.setVelocityY(-330);
+            }
+
+            if(this.cursors.space.isDown){
+                player.attack();
             }
         }
     }

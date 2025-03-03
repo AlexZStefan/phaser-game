@@ -8,14 +8,26 @@ export default class Enemy extends Humanoid {
         this.setTint(0xff0000);
 
         scene.physics.add.overlap(scene.player, this, ()=> scene.player.triggerDeath(), null, this);
+
+        this.scene.time.delayedCall(100, () => {
+            this.update()
+        });
+    }
+
+    move() {
+        this.setVelocityX(-160);
+        this.anims.play('left', true);
+    }
+
+    triggerDeath(){
+        this.destroy(true);
     }
 
     update() {
         if (this.x < 0 || this.x > this.scene.scale.width || this.y < 0 || this.y > this.scene.scale.height) {
             this.destroy();
-            return true;
         }
-        return false;
+            this.move()
     }
 
     
