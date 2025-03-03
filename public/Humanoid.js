@@ -1,4 +1,3 @@
-import Phaser from "phaser";
 export default class Humanoid extends Phaser.Physics.Arcade.Sprite {
     /**
      * @param {Phaser.Scene} scene 
