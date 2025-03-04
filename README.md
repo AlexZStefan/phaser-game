@@ -17,9 +17,13 @@ A fast-paced 2D action game built with Phaser. Featuring fluid character movemen
 🛠️ Installation & Setup
 
 Clone the repository - git clone https://github.com/yourusername/phaser-game.git
-cd phaser-game
+
+- cd phaser-game
+
 Install dependencies - npm install
+
 Run the development server - node public/server.js
+
 Open http://localhost:3000 in your browser.
 
 🎮 Controls
