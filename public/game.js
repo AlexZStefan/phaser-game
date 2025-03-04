@@ -18,28 +18,28 @@ export default class GameScene extends Phaser.Scene {
         * @type {Phaser.Physics.Arcade.StaticGroup}
         */
         this.staticObjects = null;
-         /**
-        * @type {Collectables}
-        */
+        /**
+       * @type {Collectables}
+       */
         this.collectables = null;
-         /**
-        * @type {Phaser.Physics.Arcade.Sprite}
-        */
+        /**
+       * @type {Phaser.Physics.Arcade.Sprite}
+       */
         this.traps = null;
-         /**
-        * @type {CollectableManager}
-        */
+        /**
+       * @type {CollectableManager}
+       */
         this.collectableManager = null;
-         /**
-        * @type {EnemySpawner}
-        */
+        /**
+       * @type {EnemySpawner}
+       */
         this.enemySpawner = null;
-         /**
-        * @type {InputHandler}
-        */
+        /**
+       * @type {InputHandler}
+       */
         this.inputHandler = null;
     }
-    
+
     preload() {
         this.load.image('sky', './Resources/Sprites/sky.png');
         this.load.image('ground', './Resources/Sprites/platform.png');
@@ -52,6 +52,31 @@ export default class GameScene extends Phaser.Scene {
             './Resources/Sprites/dude.png',
             { frameWidth: 32, frameHeight: 48 }
         );
+
+        this.load.spritesheet('attack',
+            './Resources/Sprites/PlayerSprite/attack.png',
+            { frameWidth: 43, frameHeight: 37 }
+        );
+
+        this.load.spritesheet('playerIdle',
+            './Resources/Sprites/PlayerSprite/idle.png',
+            { frameWidth: 24, frameHeight: 32}
+        );
+
+        this.load.spritesheet('playerRight',
+            './Resources/Sprites/PlayerSprite/right.png',
+            { frameWidth: 22, frameHeight: 33}
+        );
+        this.load.spritesheet('playerLeft',
+            './Resources/Sprites/PlayerSprite/left.png',
+            { frameWidth: 22, frameHeight: 33}
+        );
+
+        this.load.spritesheet('dead',
+            './Resources/Sprites/PlayerSprite/dead.png',
+            { frameWidth: 33, frameHeight: 32}
+        );
+
         this.load.json('collectables', './Resources/Data/collectables.json');
     }
 
@@ -73,35 +98,35 @@ export default class GameScene extends Phaser.Scene {
         this.platforms.create(50, 250, 'ground');
         this.platforms.create(750, 220, 'ground');
 
-        this.player = new Player(this, 300, 200, "dude")
+        this.player = new Player(this, 300, 200, "playerIdle")
 
         const logo = this.physics.add.sprite(400, 100, 'bomb');
         logo.setVelocity(100, 200);
         logo.setBounce(1, 1);
         logo.setCollideWorldBounds(true);
-        this.physics.add.collider(logo,  this.platforms);
+        this.physics.add.collider(logo, this.platforms);
 
         particles.startFollow(logo);
         this.stars = this.physics.add.group({
             key: 'star',
             repeat: 11,
-            setXY: { x: 12, y: 0, stepX: 70 }
+            setXY: { x: -12, y: -200, stepX: 70 }
         });
 
-        this.physics.add.collider( this.stars,  this.platforms);
-        this.physics.add.overlap(this.player,  this.stars, collectStar, null, this);
+        this.physics.add.collider(this.stars, this.platforms);
+        this.physics.add.overlap(this.player, this.stars, collectStar, null, this);
 
         this.bombs = this.physics.add.group();
-        this.physics.add.collider( this.bombs,  this.platforms);
-        this.physics.add.collider(this.player,  this.bombs, hitBomb, null, this);
+        this.physics.add.collider(this.bombs, this.platforms);
+        this.physics.add.collider(this.player, this.bombs, hitBomb, null, this);
 
-        this.collectableManager = new CollectableManager(this, this.player,  this.platforms);
-        let collectableJson =  this.collectableManager.collectablesJson;
-         this.collectableManager.createCollectable(300, 300, collectableJson.star.type, collectableJson.star.value);
-         this.collectableManager.createCollectable(400, 400, collectableJson.star.type, collectableJson.star.value);
+        this.collectableManager = new CollectableManager(this, this.player, this.platforms);
+        let collectableJson = this.collectableManager.collectablesJson;
+        this.collectableManager.createCollectable(300, 300, collectableJson.star.type, collectableJson.star.value);
+        this.collectableManager.createCollectable(400, 400, collectableJson.star.type, collectableJson.star.value);
 
-         this.inputHandler = new InputHandler(this, this.player);
-         this.enemySpawner = new EnemySpawner(this);
+        this.inputHandler = new InputHandler(this, this.player);
+        this.enemySpawner = new EnemySpawner(this);
 
         this.input.keyboard.on('keydown-ESC', () => {
             this.scene.launch("PauseMenu"); // Open pause menu
@@ -132,7 +157,7 @@ function collectStar(player, star) {
 
     player.inventory.addItem("star", 10);
 
-    if ( this.stars.countActive(true) === 0) {
+    if (this.stars.countActive(true) === 0) {
         this.stars.children.iterate(function (child) {
             child.enableBody(true, child.x, 0, true, true);
             return true;
@@ -140,7 +165,7 @@ function collectStar(player, star) {
 
         var x = (player.x < 400) ? Phaser.Math.Between(400, 800) : Phaser.Math.Between(0, 400);
 
-        var bomb =  this.bombs.create(x, 16, 'bomb');
+        var bomb = this.bombs.create(x, 16, 'bomb');
         bomb.setBounce(1);
         bomb.setCollideWorldBounds(true);
         bomb.setVelocity(Phaser.Math.Between(-200, 200), 20);
@@ -158,7 +183,7 @@ const config = {
             debug: false
         }
     },
-    scene: [ MaineMenu, GameScene, PauseMenu, GameOver]
+    scene: [MaineMenu, GameScene, PauseMenu, GameOver]
 };
 
 const game = new Phaser.Game(config);
