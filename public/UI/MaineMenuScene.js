@@ -3,9 +3,23 @@ export default class MaineMenu extends Phaser.Scene {
         super({ key: "MainMenu" });
     }
 
-    create() {
-        this.add.text(300, 150, "Main Menu", { fontSize: "40px", color: "#fff" });
+    preload(){
+        this.load.image('background', './Resources/Sprites/UI/background.jpg');
+        this.load.image('button', './Resources/Sprites/UI/button.png');
+    }
 
+    create() {
+        this.add.image(400, 300, "background");
+        let t = this.add.text(325, 150, "Main Menu", { fontSize: "40px", color: "#fff" });
+        t.setTint(0xff0000);
+        
+        let button1 = this.add.image(425, 260, "button");
+        button1.setScale(0.5, 0.2);
+        button1.setTint(0xA0A0A0);
+        let button2 =this.add.image(425, 310, "button");
+        button2.setScale(0.5, 0.2);
+        button2.setTint(0xA0A0A0);
+        
         this.createButton(350, 250, "Start Game", () => this.startGame());
         this.createButton(350, 300, "Settings", () => this.openSettings());
     }

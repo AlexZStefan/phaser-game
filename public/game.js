@@ -93,7 +93,7 @@ export default class GameScene extends Phaser.Scene {
         this.platforms.create(50, 250, 'ground');
         this.platforms.create(750, 220, 'ground');
 
-        this.player = new Player(this, 300, 200, "playerIdle")
+        this.player = new Player(this, 100, 500, "playerIdle")
 
         this.stars = this.physics.add.group({
             key: 'star',
