@@ -1,3 +1,4 @@
+import {createTweenJumpStamp} from "./Utilities.js"
 export default class Humanoid extends Phaser.Physics.Arcade.Sprite {
     /**
      * @param {Phaser.Scene} scene 
@@ -10,7 +11,7 @@ export default class Humanoid extends Phaser.Physics.Arcade.Sprite {
         super(scene, x, y, texture);
         this.health = 100;
         this.dead = false;
-
+        this.isAttacking = false;
         // Attach the humanoid to the scene
         scene.add.existing(this);  // ✅ This makes sure the sprite is visible
         scene.physics.add.existing(this); // ✅ Enables physics on the player
@@ -25,9 +26,39 @@ export default class Humanoid extends Phaser.Physics.Arcade.Sprite {
 
         this.createAnimation();
     }
-  
-    createAnimation() {   
-  
+
+    moveLeft() {
+        this.setVelocityX(-160);
+        this.setFlipX(true);
+        if (!this.isAttacking)
+            this.anims.play('left', true);
+    }
+
+    moveRight() {
+        this.setFlipX(false);
+        this.setVelocityX(160);
+        if (!this.isAttacking)
+            this.anims.play('right', true);
+    }
+    jump() {
+        this.setVelocityY(-330);
+        createTweenJumpStamp(this.scene, this.x, this.y + 10, 'jumpSmoke');
+    }
+
+    idle() {
+        this.setVelocityX(0);
+        if (!this.isAttacking)
+            this.anims.play('turn', true);
+    }
+
+    createAnimation() {
+        this.anims.create({
+            key: 'slash',
+            frames: this.anims.generateFrameNumbers('slash', { start: 0, end: 3 }),
+            frameRate: 10,
+            repeat: -1
+        });
+
         this.anims.create({
             key: 'turn',
             frames: this.anims.generateFrameNumbers('playerIdle', { start: 0, end: 10 }),
