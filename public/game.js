@@ -38,6 +38,7 @@ export default class GameScene extends Phaser.Scene {
        * @type {InputHandler}
        */
         this.inputHandler = null;
+        this.timer = 0;
     }
 
     preload() {
@@ -45,54 +46,47 @@ export default class GameScene extends Phaser.Scene {
         this.load.image('ground', './Resources/Sprites/platform.png');
         this.load.image('star', './Resources/Sprites/star.png');
         this.load.image('bomb', './Resources/Sprites/bomb.png');
-        this.load.image('gem', './Resources/Sprites/bomb.png');
+        this.load.image('gem', './Resources/Sprites/gem.png');
         this.load.image('coin', './Resources/Sprites/bomb.png');
         this.load.image('jumpSmoke', './Resources/Sprites/jumpSmoke.png');
-        
+        this.load.image('kills', './Resources/Sprites/kills.png');
+
         this.load.spritesheet('dude',
             './Resources/Sprites/dude.png',
             { frameWidth: 32, frameHeight: 48 }
         );
-
         this.load.spritesheet('attack',
             './Resources/Sprites/PlayerSprite/attack.png',
             { frameWidth: 43, frameHeight: 37 }
         );
-
         this.load.spritesheet('playerIdle',
             './Resources/Sprites/PlayerSprite/idle.png',
-            { frameWidth: 24, frameHeight: 32}
+            { frameWidth: 24, frameHeight: 32 }
         );
-
         this.load.spritesheet('playerRight',
             './Resources/Sprites/PlayerSprite/right.png',
-            { frameWidth: 22, frameHeight: 33}
+            { frameWidth: 22, frameHeight: 33 }
         );
         this.load.spritesheet('playerLeft',
             './Resources/Sprites/PlayerSprite/left.png',
-            { frameWidth: 22, frameHeight: 33}
+            { frameWidth: 22, frameHeight: 33 }
         );
-
         this.load.spritesheet('dead',
             './Resources/Sprites/PlayerSprite/dead.png',
-            { frameWidth: 33, frameHeight: 32}
+            { frameWidth: 33, frameHeight: 32 }
         );
-
         this.load.spritesheet('slash',
             './Resources/Sprites/PlayerSprite/slash.png',
-            { frameWidth: 30, frameHeight: 30}
+            { frameWidth: 30, frameHeight: 30 }
         );
-
-        
-
         this.load.json('collectables', './Resources/Data/collectables.json');
     }
 
     create() {
-        this.events.on('shutdown', this.cleanup, this); // 🔥 Register cleanup function
-        this.events.on('destroy', this.cleanup, this);  // 🔥 If the scene gets destroyed
+        this.events.on('shutdown', this.cleanup, this); 
+        this.events.on('destroy', this.cleanup, this);  
         this.add.image(400, 300, 'sky');
-        
+
         this.platforms = this.physics.add.staticGroup();
         this.platforms.create(400, 558, 'ground').setScale(2).refreshBody();
         this.platforms.create(600, 400, 'ground');
@@ -115,27 +109,35 @@ export default class GameScene extends Phaser.Scene {
         this.physics.add.collider(this.player, this.bombs, hitBomb, null, this);
 
         this.collectableManager = new CollectableManager(this, this.player, this.platforms);
-        let collectableJson = this.collectableManager.collectablesJson;
-        this.collectableManager.createCollectable(300, 300, collectableJson.star.type, collectableJson.star.value);
-        this.collectableManager.createCollectable(400, 400, collectableJson.star.type, collectableJson.star.value);
-
         this.inputHandler = new InputHandler(this, this.player);
         this.enemySpawner = new EnemySpawner(this);
 
         this.input.keyboard.on('keydown-ESC', () => {
-            this.scene.launch("PauseMenu"); // Open pause menu
-            this.scene.pause(); // Pause the game
+            this.scene.launch("PauseMenu"); 
+            this.scene.pause();
         });
     }
 
     cleanup() {
         if (this.player) this.player.destroy();
-
     }
 
     update(time, delta) {
+        this.timer += delta;
+        // Spawn gems randomly 
+        this.spawnGems();
         this.inputHandler.update();
         this.enemySpawner.update(delta);
+    }
+
+    spawnGems(){
+        if (this.timer > 10000) {
+            let positionX = Math.random()* this.scale.width;
+            this.collectableManager.createCollectable(positionX, 0,
+                this.collectableManager.collectablesJson.gem.type, this.collectableManager.collectablesJson.gem.value);
+            this.timer = 0;
+        }
+        
     }
 }
 
@@ -170,6 +172,7 @@ const config = {
     type: Phaser.AUTO,
     width: 800,
     height: 600,
+
     physics: {
         default: 'arcade',
         arcade: {
