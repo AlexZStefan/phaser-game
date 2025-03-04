@@ -25,28 +25,42 @@ export default class Humanoid extends Phaser.Physics.Arcade.Sprite {
 
         this.createAnimation();
     }
-
-   
-
-    createAnimation() {
+  
+    createAnimation() {   
+  
         this.anims.create({
-            key: 'left',
-            frames: this.anims.generateFrameNumbers('dude', { start: 0, end: 3 }),
+            key: 'turn',
+            frames: this.anims.generateFrameNumbers('playerIdle', { start: 0, end: 10 }),
             frameRate: 10,
             repeat: -1
         });
 
         this.anims.create({
-            key: 'turn',
-            frames: [{ key: 'dude', frame: 4 }],
-            frameRate: 20
+            key: 'left',
+            frames: this.anims.generateFrameNumbers('playerRight', { start: 0, end: 12 }),
+            frameRate: 10,
+            repeat: -1
         });
 
         this.anims.create({
             key: 'right',
-            frames: this.anims.generateFrameNumbers('dude', { start: 5, end: 8 }),
+            frames: this.anims.generateFrameNumbers('playerRight', { start: 0, end: 12 }),
             frameRate: 10,
-            repeat: -1
+            repeat: -1,
+        });
+
+        this.anims.create({
+            key: 'attack',
+            frames: this.anims.generateFrameNumbers('attack', { start: 0, end: 17 }),
+            frameRate: 30,
+            repeat: 0
+        });
+
+        this.anims.create({
+            key: 'dead',
+            frames: this.anims.generateFrameNumbers('dead', { start: 0, end: 14 }),
+            frameRate: 20,
+            repeat: 0
         });
 
     }
