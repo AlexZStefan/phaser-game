@@ -10,30 +10,36 @@ export default class InputHandler {
 
     characterMovement() {
         let player = this.scene.player;
-        if(!player.dead)
-        {
+        // Should implement a state machine for humanoid
+        if (!player.dead) {
+            if (this.cursors.space.isDown) {
+                player.anims.play('attack', true);
+                player.attack();
+                player.isAttacking = true; 
+            }
             if (this.cursors.left.isDown) {
                 player.setVelocityX(-160);
-                
-                player.anims.play('left', true);
+                player.setFlipX(true);
+                if (!player.isAttacking)
+                    player.anims.play('left', true);
             }
+
             else if (this.cursors.right.isDown) {
+                player.setFlipX(false);
                 player.setVelocityX(160);
-                
-                player.anims.play('right', true);
+                if (!player.isAttacking)
+                    player.anims.play('right', true);
             }
             else {
                 player.setVelocityX(0);
-                
-                player.anims.play('turn');
+                if (!player.isAttacking)
+                    player.anims.play('turn', true);
+
             }
             if (this.cursors.up.isDown && player.body.touching.down) {
                 player.setVelocityY(-330);
             }
 
-            if(this.cursors.space.isDown){
-                player.attack();
-            }
         }
     }
 
