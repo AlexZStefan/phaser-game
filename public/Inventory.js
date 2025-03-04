@@ -1,3 +1,4 @@
+import { createTweenTextScale } from "./Utilities.js";
 export default class Inventory {
     /**
      * @param {Phaser.Scene} scene
@@ -8,13 +9,12 @@ export default class Inventory {
         this.itemIcons = {};
         this.x = 10;
         this.y = 10;
-        this.spacing = 130;
+        this.spacing = 200;
         let collectablesJson = this.scene.cache.json.get('collectables').collectables;
 
         Object.values(collectablesJson).forEach(element => {
             this.addItem(element.type, 0)
         });
-
         scene.events.on("shutdown", this.clearInventory, this);
     }
 
@@ -32,6 +32,7 @@ export default class Inventory {
     
     // Add an item to the inventory (e.g., "star", "coin")
     addItem(itemType, value) {
+        if(itemType == null) return; 
         this.CreateTypeIfDoesNotExist(itemType);
         if (value != null)
             this.items[itemType] += value; // Increase the item count
@@ -60,7 +61,7 @@ export default class Inventory {
     }
     
     // Update the text next to the icon for a particular item
-    updateItemText(itemType, value = null) {
+    updateItemText(itemType = null) {
         const textKey = `${itemType}Text`;
         if (!this.itemIcons[itemType]) {
             console.error(`Error: No icon found for item type "${itemType}"`);
@@ -76,7 +77,8 @@ export default class Inventory {
                 { fontSize: '20px' }
             );
         }
-        if (value != null) this.items[itemType] = value;
         this.scene[textKey].setText(`${itemType}: ${this.items[itemType]}`);
+       
+        createTweenTextScale(this.scene, textKey, 1.2, 1.2);
     }
 }
