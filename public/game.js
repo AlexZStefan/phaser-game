@@ -47,7 +47,8 @@ export default class GameScene extends Phaser.Scene {
         this.load.image('bomb', './Resources/Sprites/bomb.png');
         this.load.image('gem', './Resources/Sprites/bomb.png');
         this.load.image('coin', './Resources/Sprites/bomb.png');
-
+        this.load.image('jumpSmoke', './Resources/Sprites/jumpSmoke.png');
+        
         this.load.spritesheet('dude',
             './Resources/Sprites/dude.png',
             { frameWidth: 32, frameHeight: 48 }
@@ -77,21 +78,21 @@ export default class GameScene extends Phaser.Scene {
             { frameWidth: 33, frameHeight: 32}
         );
 
+        this.load.spritesheet('slash',
+            './Resources/Sprites/PlayerSprite/slash.png',
+            { frameWidth: 30, frameHeight: 30}
+        );
+
+        
+
         this.load.json('collectables', './Resources/Data/collectables.json');
     }
 
     create() {
         this.events.on('shutdown', this.cleanup, this); // 🔥 Register cleanup function
         this.events.on('destroy', this.cleanup, this);  // 🔥 If the scene gets destroyed
-
         this.add.image(400, 300, 'sky');
-
-        const particles = this.add.particles(0, 0, 'star', {
-            speed: 100,
-            scale: { start: 1, end: 0 },
-            blendMode: 'ADD'
-        });
-
+        
         this.platforms = this.physics.add.staticGroup();
         this.platforms.create(400, 558, 'ground').setScale(2).refreshBody();
         this.platforms.create(600, 400, 'ground');
@@ -100,17 +101,10 @@ export default class GameScene extends Phaser.Scene {
 
         this.player = new Player(this, 300, 200, "playerIdle")
 
-        const logo = this.physics.add.sprite(400, 100, 'bomb');
-        logo.setVelocity(100, 200);
-        logo.setBounce(1, 1);
-        logo.setCollideWorldBounds(true);
-        this.physics.add.collider(logo, this.platforms);
-
-        particles.startFollow(logo);
         this.stars = this.physics.add.group({
             key: 'star',
             repeat: 11,
-            setXY: { x: -12, y: -200, stepX: 70 }
+            setXY: { x: 12, y: 0, stepX: 70 }
         });
 
         this.physics.add.collider(this.stars, this.platforms);
