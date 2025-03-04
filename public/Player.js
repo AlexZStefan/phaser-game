@@ -26,6 +26,8 @@ export default class Player extends Humanoid {
     }
 
     attack() {
+        this.scene.cameras.main.shake(100, 0.005); 
+
         this.anims.play('attack', true);
         this.isAttacking = true;
         let forwardX = this.body.velocity.x;
