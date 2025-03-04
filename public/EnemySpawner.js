@@ -17,7 +17,7 @@ export default class EnemySpawner {
         let x = this.scene.sys.game.canvas.width;
     
         // Ensure new Enemy is created
-        let enemy = new Enemy(this.scene, x, y, "dude");
+        let enemy = new Enemy(this.scene, x, y, "playerIdle");
         if (enemy) {
             this.enemies.push(enemy);
         }

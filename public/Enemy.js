@@ -7,7 +7,8 @@ export default class Enemy extends Humanoid {
         this.scene = scene;
         this.setTint(0xff0000);
 
-        scene.physics.add.overlap(scene.player, this, ()=> scene.player.triggerDeath(), null, this);
+        if(scene.player)
+            scene.physics.add.overlap(scene.player, this, ()=> scene.player.triggerDeath(), null, this);
 
         this.scene.time.delayedCall(100, () => {
             this.update()
@@ -16,6 +17,7 @@ export default class Enemy extends Humanoid {
 
     move() {
         this.setVelocityX(-160);
+        this.setFlipX(true);
         this.anims.play('left', true);
     }
 
