@@ -6,11 +6,19 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
+  "type": "module",
   "author": "",
   "license": "ISC",
-  "description": "",
+  "description": "Minigame developed using express, Phaser and Node.js",
   "dependencies": {
     "express": "^4.21.2",
     "phaser": "^3.88.2"
+  },
+  "directories": {
+    "test": "tests"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.50.1",
+    "playwright": "^1.50.1"
   }
 }
