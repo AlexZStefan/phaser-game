@@ -51,6 +51,7 @@ export default class Player extends Humanoid {
             this.scene.enemySpawner.enemies.forEach(enemy => {
                 this.scene.physics.add.overlap(bomb, enemy, () => {
                     enemy.triggerDeath();
+                    this.inventory.addItem("kills", 1);
                     bomb.destroy();
                 }, null, this);
             });

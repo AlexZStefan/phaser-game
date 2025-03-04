@@ -7,7 +7,6 @@ export default class CollectableManager {
         this.player = player;
         this.staticEnvironment = staticEnvironment;
         this.collectablesJson = null;
-
         this.loadCollectables();
     }
 

@@ -2,7 +2,7 @@
   "collectables": 
     {
       "star": { "type": "star", "value": 10 },
-      "coin": { "type": "coin", "value": 5 },
+      "kills": { "type": "kills", "value": 1 },
       "gem": { "type": "gem", "value": 20 }
     }
   

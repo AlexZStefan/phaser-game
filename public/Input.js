@@ -28,7 +28,6 @@ export default class InputHandler {
             if (this.cursors.up.isDown && player.body.touching.down) {
                 player.jump();
             }
-
         }
     }
 
