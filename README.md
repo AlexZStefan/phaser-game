@@ -1,6 +1,6 @@
 🎮 Phaser Game
 
-A fast-paced 2D action game built with Phaser. Featuring fluid character movement, dynamic animations, particle effects, and a custom test framework—no external libraries required!
+A fast-paced 2D action game built with Phaser. Featuring fluid character movement, dynamic animations, particle effects.
 
 🚀 Features
 
@@ -16,11 +16,11 @@ A fast-paced 2D action game built with Phaser. Featuring fluid character movemen
 
 🛠️ Installation & Setup
 
-Clone the repository - git clone https://github.com/AlexZStefan/phaser-game.git
+- Clone the repository - git clone https://github.com/AlexZStefan/phaser-game.git
 
 - cd phaser-game
 
-Install dependencies - npm install
+- Install dependencies - npm install
 
 Run the development server - node public/server.js
 
@@ -30,10 +30,10 @@ Open http://localhost:3000 in your browser.
 
 Action	Key
 
-Move LeftArrow	
+Move    LeftArrow	
 
-Move RightArrow	
+Move    RightArrow	
 
-Jump	UpArrow 
+Jump	  UpArrow 
 
 Attack	Space
